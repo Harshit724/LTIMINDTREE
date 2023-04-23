@@ -1,0 +1,68 @@
+using System;
+
+public class Price
+{
+    public DateTime Date { get; set; }
+    public string ProductKey { get; set; }
+    public decimal Value { get; set; }
+}
+
+public class Position
+{
+    public DateTime Date { get; set; }
+    public decimal Amount { get; set; }
+    public string ProductKey { get; set; }
+}
+
+class Program
+{
+   public static void Main(string[] args)
+    {
+        Price[] prices = GetPrices();
+        Position[] positions = GetPositions();
+
+        decimal totalMarketValue = 0;
+
+        foreach (var pos in positions)
+        {
+            var matchingPrice = Array.Find(prices, a => a.ProductKey == pos.ProductKey && a.Date.Date == pos.Date.Date);
+
+            if (matchingPrice != null)
+            {
+                decimal positionMarketValue = matchingPrice.Value * pos.Amount;
+                totalMarketValue += positionMarketValue;
+
+                Console.WriteLine($"Product Key: {pos.ProductKey}, Date: {pos.Date}, Amount: {pos.Amount}, Price Value: {matchingPrice.Value}, Market Value: {positionMarketValue}");
+            }
+            else
+            {
+                Console.WriteLine($"Product Key: {pos.ProductKey}, Date: {pos.Date}, Market Value: Not Found");
+            }
+        }
+
+        Console.WriteLine($"Total Market Value: {totalMarketValue}");
+        Console.ReadLine();
+    }
+
+   public static Price[] GetPrices()
+    {
+        return new Price[]
+        {
+            new Price { Date = DateTime.Now, ProductKey = "A1", Value = 10 },
+            new Price { Date = DateTime.Now, ProductKey = "A2", Value = 15 },
+            new Price { Date = DateTime.Now, ProductKey = "A3", Value = 20 },
+            new Price { Date = DateTime.Now, ProductKey = "A4", Value = 25 }
+        };
+    }
+
+   public static Position[] GetPositions()
+    {
+        return new Position[]
+        {
+            new Position { Date = DateTime.Now, ProductKey = "A1", Amount = 8 },
+            new Position { Date = DateTime.Now, ProductKey = "A2", Amount = 6 },
+            new Position { Date = DateTime.Now, ProductKey = "A3", Amount = 4 },
+             new Position { Date = DateTime.Now, ProductKey = "A4", Amount = 2 }
+        };
+    }
+}
